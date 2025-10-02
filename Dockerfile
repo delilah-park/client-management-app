@@ -6,11 +6,8 @@ WORKDIR /app
 # 전체 프로젝트 복사
 COPY . .
 
-# gradlew 실행 권한 부여
-RUN chmod +x ./gradlew
-
-# 빌드 실행
-RUN ./gradlew clean build -x test --no-daemon
+# gradle 명령어로 직접 빌드 (wrapper 불필요)
+RUN gradle clean build -x test --no-daemon
 
 # 실행 단계
 FROM openjdk:17-jdk-slim
