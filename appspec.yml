@@ -1,6 +1,9 @@
 version: 0.0
 os: linux
 files:
+  - source: /build/libs/client-management-app.jar
+    destination: /home/ubuntu/app
+    overwrite: yes
   - source: /
     destination: /home/ubuntu/app
     overwrite: yes
@@ -13,6 +16,9 @@ permissions:
     type:
       - directory
       - file
+  - object: /home/ubuntu/app/client-management-app.jar
+    owner: ubuntu
+    mode: 755
 
 hooks:
   ApplicationStop:
