@@ -43,7 +43,6 @@ phases:
       - zip -r -q ../deployment-artifact.zip .
       - cd ..
 #      - echo Build completed on `date`
-#      - ls -la build/libs/
 
 
 artifacts:
