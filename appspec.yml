@@ -16,9 +16,6 @@ permissions:
     type:
       - directory
       - file
-  - object: /home/ubuntu/app/client-management-app.jar
-    owner: ubuntu
-    mode: 755
 
 hooks:
   ApplicationStop:
