@@ -1,38 +1,37 @@
 version: 0.2
 
-
 phases:
+  install:
+    runtime-versions:
+      java: corretto17
+
   pre_build:
     commands:
-      - echo Logging in to Amazon ECR...
-      # ECR에 Docker 인증
-      - $(aws ecr get-login --no-include-email --region $REGION)
       - echo Build started on `date`
-      - echo Building the Docker image...
-      # Dockerfile이 있는 현재 디렉토리를 기반으로 이미지 빌드
-      - docker build -t $REPOSITORY_URI:latest .
-      # 태그 변수 적용 (선택 사항, ECR에 $IMAGE_TAG으로도 태그)
-      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+      - echo Checking Java version...
+      - java -version
+
+  build:
+    commands:
+      - echo Building with Gradle...
+      # Gradle 사용 시
+      - chmod +x ./gradlew
+      - ./gradlew clean build -x test
+
+      # Maven 사용 시는 아래 주석 해제하고 위 Gradle 명령어 주석 처리
+      # - mvn clean package -DskipTests
 
   post_build:
     commands:
       - echo Build completed on `date`
-      - echo Pushing the Docker image...
-      # 빌드된 이미지를 ECR로 푸시 (latest 태그와 $IMAGE_TAG 태그 모두 푸시)
-      - docker push $REPOSITORY_URI:latest
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - echo Docker image pushed successfully.
-
-      # =======================================================
-      # CodeDeploy를 위한 imagedefinitions.json 파일 생성 (핵심)
-      # =======================================================
-      - echo Creating imagedefinitions.json...
-      # CodeDeploy의 scripts/start_docker.sh에서 사용될 파일입니다.
-      - printf '[{"name":"spring-app-container","imageUri":"%s"}]' "$REPOSITORY_URI:$IMAGE_TAG" > imagedefinitions.json
-      - cat imagedefinitions.json # 생성된 파일 내용 확인
+      - echo Listing build artifacts...
+      - ls -la build/libs/  # Gradle
+      # - ls -la target/  # Maven
 
 artifacts:
   files:
-    - imagedefinitions.json # CodeDeploy 아티팩트에 포함
-    - appspec.yml         # CodeDeploy 아티팩트에 포함
-    - scripts/**/* # CodeDeploy 아티팩트에 스크립트 폴더 전체 포함
+    - appspec.yml
+    - scripts/**/*
+    - build/libs/*.jar  # Gradle
+    # - target/*.jar  # Maven
+  discard-paths: no

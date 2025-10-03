@@ -1,36 +1,41 @@
 version: 0.0
 os: linux
-
 files:
-  # 파일 복사가 필요하지 않습니다. 도커 이미지를 ECR에서 직접 가져옵니다.
-  # 하지만 임시 파일 복사를 위해 일단 모든 파일을 배포 경로로 복사합니다.
   - source: /
-    destination: /home/ubuntu/app/deploy
+    destination: /home/ubuntu/app
+    overwrite: yes
 
 permissions:
-  # 배포 경로(/home/ubuntu/app/deploy)에 복사된 scripts 폴더 내부의 모든 파일에 대해
-  - object: /home/ubuntu/app/deploy/scripts
-    pattern: "**" # scripts 폴더 하위의 모든 파일 및 폴더를 의미
-    owner: root
-    group: root
-    mode: 755 # 실행 권한(rwxr-xr-x) 부여
+  - object: /home/ubuntu/app
+    owner: ubuntu
+    group: ubuntu
+    mode: 755
     type:
-      - file
       - directory
+      - file
 
 hooks:
   ApplicationStop:
-    - location: scripts/stop_docker.sh
-      timeout: 60
-      runas: root
+    - location: scripts/stop_application.sh
+      timeout: 300
+      runas: ubuntu
 
-  ApplicationStart:
-    - location: scripts/start_docker.sh
+  BeforeInstall:
+    - location: scripts/before_install.sh
       timeout: 300
       runas: root
 
-#  ValidateService:
-#    - location: scripts/health_check_docker.sh
-#      timeout: 300
-#      runas: root
+  AfterInstall:
+    - location: scripts/after_install.sh
+      timeout: 300
+      runas: ubuntu
 
+  ApplicationStart:
+    - location: scripts/start_application.sh
+      timeout: 300
+      runas: ubuntu
+
+  ValidateService:
+    - location: scripts/validate_service.sh
+      timeout: 300
+      runas: ubuntu
