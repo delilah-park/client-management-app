@@ -8,8 +8,13 @@ phases:
   pre_build:
     commands:
       - echo Build started on `date`
-      - echo Checking Java version...
       - java -version
+      - echo Downloading Gradle 8.5...
+      - wget -q https://services.gradle.org/distributions/gradle-8.5-bin.zip
+      - unzip -q gradle-8.5-bin.zip
+      - export GRADLE_HOME=$PWD/gradle-8.5
+      - export PATH=$GRADLE_HOME/bin:$PATH
+      - gradle --version
 
   build:
     commands:
