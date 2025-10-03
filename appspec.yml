@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 files:
-  - source: /build/libs/client-management-app.jar
+  - source: /client-management-app.jar
     destination: /home/ubuntu/app
     overwrite: yes
   - source: /

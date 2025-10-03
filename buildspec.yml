@@ -23,11 +23,27 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-      - ls -la build/libs/
+      # 1. 아티팩트를 모을 임시 디렉토리를 생성합니다.
+      - DEPLOY_DIR=deploy_artifact
+      - mkdir -p $DEPLOY_DIR
+
+      # 2. JAR 파일(빌드 결과물)을 임시 디렉토리로 이동/복사합니다.
+      - cp build/libs/*.jar $DEPLOY_DIR/  # ★ JAR 파일 복사
+
+      # 3. appspec.yml과 스크립트들을 복사합니다.
+      - cp appspec.yml $DEPLOY_DIR/
+      - cp -r scripts/ $DEPLOY_DIR/
+
+      # 4. 임시 디렉토리의 내용을 확인합니다.
+      - ls -la $DEPLOY_DIR
+#      - echo Build completed on `date`
+#      - ls -la build/libs/
 
 artifacts:
   files:
-    - appspec.yml
-    - scripts/**/*
-    - build/libs/*.jar
-  discard-paths: no
+    - '**/*'
+  base-directory: deploy_artifact
+#    - appspec.yml
+#    - scripts/**/*
+#    - build/libs/*.jar
+  discard-paths: yes
