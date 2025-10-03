@@ -1,19 +1,21 @@
 #!/bin/bash
-# CodeDeploy 환경 변수에서 ECR 경로와 태그를 가져와야 함.
-# 하지만 CodePipeline 설정을 단순화하기 위해 여기서는 'imagedefinitions.json'을 파싱하거나,
-# ECR 경로를 직접 사용합니다. (imagedefinitions.json 파싱이 더 안정적입니다.)
+# CodeDeploy ApplicationStop Hook (Existing Docker Cleanup)
 
-DEPLOY_PATH=/home/ec2-user/app/deploy
 CONTAINER_NAME="spring-app-container"
-# CodeDeploy 아티팩트에서 imagedefinitions.json을 파싱하여 이미지 URI를 가져옴
-IMAGE_URI=$(cat $DEPLOY_PATH/imagedefinitions.json | jq -r '.[0].imageUri')
 
-echo "Starting container with image: $IMAGE_URI"
+echo "Checking for running container: $CONTAINER_NAME"
 
-# 도커 이미지를 ECR에서 pull합니다.
-docker pull $IMAGE_URI
+# 현재 실행 중이거나 중지된 상태의 컨테이너 목록에서 이름을 검색합니다.
+if docker ps -a --format '{{.Names}}' | grep -q "$CONTAINER_NAME"; then
+    echo "Existing container found. Stopping and removing..."
 
-# 새 컨테이너 실행 (8080 포트를 EC2의 8080 포트에 매핑)
-docker run -d --name $CONTAINER_NAME -p 8080:8080 $IMAGE_URI
+    # 컨테이너 중지 (이미 중지된 경우에도 오류 없이 작동)
+    docker stop $CONTAINER_NAME
 
-echo "New container started."
+    # 컨테이너 삭제
+    docker rm $CONTAINER_NAME
+
+    echo "Cleanup complete."
+else
+    echo "No existing container found. Skipping cleanup."
+fi
