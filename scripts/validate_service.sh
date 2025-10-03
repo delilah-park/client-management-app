@@ -13,7 +13,7 @@ fi
 echo "애플리케이션 PID: $CURRENT_PID"
 
 # Health Check (포트 8080 기준, 필요시 변경)
-sleep 5
+sleep 60
 
 # curl로 health check (Spring Boot Actuator 사용 시)
 # response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health)
