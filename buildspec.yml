@@ -9,34 +9,25 @@ phases:
     commands:
       - echo Build started on `date`
       - java -version
-      - echo Downloading Gradle 8.5...
+      - echo Downloading and installing Gradle...
       - wget -q https://services.gradle.org/distributions/gradle-8.5-bin.zip
       - unzip -q gradle-8.5-bin.zip
-      - export GRADLE_HOME=$PWD/gradle-8.5
-      - export PATH=$GRADLE_HOME/bin:$PATH
+      - export PATH=$PWD/gradle-8.5/bin:$PATH
       - gradle --version
 
   build:
     commands:
       - echo Building with Gradle...
-      # Gradle 사용 시
-      - chmod +x ./gradlew
-      - ./gradlew clean build -x test
-
-      # Maven 사용 시는 아래 주석 해제하고 위 Gradle 명령어 주석 처리
-      # - mvn clean package -DskipTests
+      - gradle clean build -x test
 
   post_build:
     commands:
       - echo Build completed on `date`
-      - echo Listing build artifacts...
-      - ls -la build/libs/  # Gradle
-      # - ls -la target/  # Maven
+      - ls -la build/libs/
 
 artifacts:
   files:
     - appspec.yml
     - scripts/**/*
-    - build/libs/*.jar  # Gradle
-    # - target/*.jar  # Maven
+    - build/libs/*.jar
   discard-paths: no
