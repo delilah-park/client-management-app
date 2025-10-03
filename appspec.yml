@@ -1,4 +1,4 @@
-app_specversion: 0.0
+version: 0.0
 os: linux
 
 files:
@@ -20,5 +20,5 @@ hooks:
 
   ValidateService:
     - location: scripts/health_check_docker.sh
-      timeout: 300 # <-- 넉넉하게 5분(300초)으로 변경합니다.
+      timeout: 300
       runas: root
