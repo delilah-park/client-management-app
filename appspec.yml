@@ -1,10 +1,10 @@
 version: 0.0
 os: linux
-
 files:
-  - source: /
-    destination: /home/ubuntu/build # 인스턴스에서 파일이 저장될 위치
-
+  - source:  /
+    destination: /home/ubuntu/build/
+    overwrite: yes
+file_exists_behavior: OVERWRITE
 permissions:
   - object: /
     pattern: "**"
@@ -13,10 +13,5 @@ permissions:
 
 hooks:
   ApplicationStart:
-    - location: deploy.sh
-      timeout: 60
-      runas: ubuntu
-  ValidateService:
-    - location: healthCheck.sh
-      timeout: 60
+    - location: scripts/deploy.sh
       runas: ubuntu
