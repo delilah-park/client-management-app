@@ -1,13 +1,28 @@
-version: 0.1
+version: 0.2
 
 phases:
+  install:
+    commands:
+      # Amazon Linux 2 환경에서 Java 17을 사용하는 경우 (예시)
+      - echo Installing dependencies...
+      - yum install -y java-17-amazon-corretto
+
   build:
     commands:
-      - BASE_URL=$BASE_URL yarn install
-      - yarn build
+      - echo Build started on `date`
+      # Gradle 프로젝트를 가정하고 빌드합니다. (Maven은 'mvn package')
+      - ./gradlew build -x test
+
+  post_build:
+    commands:
+      - echo Build completed on `date`
+
 artifacts:
   files:
-    - .output/**/*
-    - scripts/**/*
+    # 1. Spring Boot 실행 가능한 JAR 파일
+    - build/libs/*.jar
+    # 2. CodeDeploy 설정 파일 (필수)
     - appspec.yml
-    - package.json
+    # 3. CodeDeploy 스크립트 파일 (필수)
+    - scripts/**
+  discard-paths: yes # S3에 업로드 시, 'build/libs/' 경로를 제거하고 파일만 올립니다.
