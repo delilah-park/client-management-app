@@ -1,38 +1,24 @@
 version: 0.0
-os: linux # EC2 인스턴스 OS (Linux 또는 Windows)
+os: linux
 
 files:
-  - source: / # CodeBuild 아티팩트의 루트 디렉토리
-    destination: /home/ubuntu/app/deploy # EC2 인스턴스의 최종 배포 경로
-
-permissions:
-  - object: /home/ubuntu/app/deploy
-    pattern: "**"
-    owner: ubuntu
-    group: ubuntu
-    # JAR 파일을 실행할 수 있는 권한 부여
-    mode: 755 # 실행 권한
+  # 파일 복사가 필요하지 않습니다. 도커 이미지를 ECR에서 직접 가져옵니다.
+  # 하지만 임시 파일 복사를 위해 일단 모든 파일을 배포 경로로 복사합니다.
+  - source: /
+    destination: /home/ubuntu/app/deploy
 
 hooks:
-  # 배포 전, 기존 서버 프로세스를 안전하게 종료
   ApplicationStop:
-    - location: scripts/stop.sh
+    - location: scripts/stop_docker.sh
       timeout: 60
-      runas: ubuntu
+      runas: root
 
-  # 파일 복사 후, 환경 설정이나 종속성 설치 (Spring Boot는 보통 생략)
-  # BeforeInstall:
-  #   - location: scripts/before_install.sh 
-  #     runas: ubuntu
-
-  # 파일 복사 완료 후, 새로운 애플리케이션을 시작
   ApplicationStart:
-    - location: scripts/start.sh
-      timeout: 180
-      runas: ubuntu
+    - location: scripts/start_docker.sh
+      timeout: 300
+      runas: root
 
-  # 애플리케이션 시작 후, 서비스가 정상인지 확인
   ValidateService:
-    - location: scripts/health_check.sh
+    - location: scripts/health_check_docker.sh
       timeout: 60
-      runas: ubuntu
+      runas: root

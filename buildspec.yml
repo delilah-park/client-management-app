@@ -3,14 +3,17 @@ version: 0.2
 phases:
   install:
     commands:
-      # Amazon Linux 2 환경에서 Java 17을 사용하는 경우 (예시)
+      # Amazon Linux 2 환경을 가정하고 Java 17 설치 (CodeBuild 환경에 따라 다를 수 있음)
       - echo Installing dependencies...
       - yum install -y java-17-amazon-corretto
+      # 또는 Ubuntu 기반이면:
+      # - apt-get update
+      # - apt-get install -y openjdk-17-jdk
 
   build:
     commands:
       - echo Build started on `date`
-      # Gradle 프로젝트를 가정하고 빌드합니다. (Maven은 'mvn package')
+      # Gradle 프로젝트 빌드 (테스트 생략)
       - ./gradlew build -x test
 
   post_build:
@@ -23,6 +26,6 @@ artifacts:
     - build/libs/*.jar
     # 2. CodeDeploy 설정 파일 (필수)
     - appspec.yml
-    # 3. CodeDeploy 스크립트 파일 (필수)
+    # 3. CodeDeploy 스크립트 폴더 전체
     - scripts/**
   discard-paths: yes # S3에 업로드 시, 'build/libs/' 경로를 제거하고 파일만 올립니다.
