@@ -7,6 +7,17 @@ files:
   - source: /
     destination: /home/ubuntu/app/deploy
 
+permissions:
+  # 배포 경로(/home/ubuntu/app/deploy)에 복사된 scripts 폴더 내부의 모든 파일에 대해
+  - object: /home/ubuntu/app/deploy/scripts
+    pattern: "**" # scripts 폴더 하위의 모든 파일 및 폴더를 의미
+    owner: root
+    group: root
+    mode: 755 # 실행 권한(rwxr-xr-x) 부여
+    type:
+      - file
+      - directory
+
 hooks:
   ApplicationStop:
     - location: scripts/stop_docker.sh
@@ -22,3 +33,4 @@ hooks:
     - location: scripts/health_check_docker.sh
       timeout: 300
       runas: root
+
