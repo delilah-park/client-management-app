@@ -1,10 +1,10 @@
 version: 0.0
 os: linux
 files:
-  - source: /deploy_artifact/client-management-app.jar
+  - source: /client-management-app.jar
     destination: /home/ubuntu/app
     overwrite: yes
-  - source: /deploy_artifact
+  - source: /
     destination: /home/ubuntu/app
     overwrite: yes
 
