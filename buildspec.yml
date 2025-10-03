@@ -36,17 +36,14 @@ phases:
 
       # 4. 임시 디렉토리의 내용을 확인합니다.
       - ls -la $DEPLOY_DIR
-
-      - echo Creating final deployment zip manually...
-      - cd $DEPLOY_DIR
-      # deployment-artifact.zip 파일을 'deploy_artifact' 폴더의 내용물로 생성
-      - zip -r -q ../deployment-artifact.zip .
-      - cd ..
 #      - echo Build completed on `date`
-
+#      - ls -la build/libs/
 
 artifacts:
   files:
-    # 🚨 이 ZIP 파일 하나만 S3에 올리도록 지정합니다.
-    - 'deployment-artifact.zip'
-  discard-paths: no # base-directory를 사용하지 않으므로 설정 제거
+    - '**/*'
+  base-directory: deploy_artifact
+#    - appspec.yml
+#    - scripts/**/*
+#    - build/libs/*.jar
+  discard-paths: yes
