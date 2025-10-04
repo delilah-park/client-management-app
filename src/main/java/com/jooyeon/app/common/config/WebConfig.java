@@ -28,7 +28,8 @@ public class WebConfig implements WebMvcConfigurer {
                         "/api/auth/logout",
                         "/api/v1/payments/mock/**",
                         "/api/products",
-                        "/api/members/withdraw/cancel"
+                        "/api/members/withdraw/cancel",
+                        "/actuator/**"
                 );
     }
 
