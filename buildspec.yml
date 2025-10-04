@@ -18,8 +18,11 @@ phases:
   build:
     commands:
       - echo Building with Gradle...
-      - gradle clean build -x test
+      - gradle build
+#      - gradle clean build test
 
+  # build 가 완료된 후, codeDeploy에 전달할 파일들을 모으는 작업
+  # 모은 파일들은 S3에 올려 codeDeploy로 배포
   post_build:
     commands:
       - echo Build completed on `date`
@@ -28,7 +31,7 @@ phases:
       - mkdir -p $DEPLOY_DIR
 
       # 2. JAR 파일(빌드 결과물)을 임시 디렉토리로 이동/복사합니다.
-      - cp build/libs/*.jar $DEPLOY_DIR/  # ★ JAR 파일 복사
+      - cp build/libs/*.jar $DEPLOY_DIR/
 
       # 3. appspec.yml과 스크립트들을 복사합니다.
       - cp appspec.yml $DEPLOY_DIR/
@@ -36,14 +39,9 @@ phases:
 
       # 4. 임시 디렉토리의 내용을 확인합니다.
       - ls -la $DEPLOY_DIR
-#      - echo Build completed on `date`
-#      - ls -la build/libs/
 
 artifacts:
   files:
     - '**/*'
-  base-directory: deploy_artifact
-#    - appspec.yml
-#    - scripts/**/*
-#    - build/libs/*.jar
+  base-directory: deploy_artifact # 이 폴더 안의 내용만 가져감
   discard-paths: yes

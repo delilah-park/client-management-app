@@ -16,9 +16,10 @@ echo "애플리케이션 PID: $CURRENT_PID"
 sleep 60
 
 # curl로 health check (Spring Boot Actuator 사용 시)
-# response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health)
+ response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/actuator/health)
 
 # 기본 포트 체크
+# sudo apt-get install net-tools 설치 필수
 if netstat -tuln | grep -q ":8080"; then
     echo "애플리케이션이 정상적으로 실행 중입니다!"
     exit 0
