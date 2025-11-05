@@ -15,3 +15,6 @@ JWT 인증, 주문 처리, 결제 연동, 실시간 재고 관리를 포함한 �
 ### Interactive Documentation
 - **Swagger UI**: http://localhost:8080/swagger-ui/index.html
 - **OpenAPI JSON**: http://localhost:8080/v3/api-docs
+
+## 샘플 이미지
+![이미지](./screenshot.png)
