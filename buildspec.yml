@@ -1,0 +1,31 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto17
+    commands:
+      - echo "🔧 Installing dependencies..."
+      - cd $CODEBUILD_SRC_DIR
+      - chmod +x gradlew
+
+  pre_build:
+    commands:
+      - echo "✅ Preparing build environment..."
+
+  build:
+    commands:
+      - echo "🚀 Starting Gradle build..."
+      - ./gradlew clean build
+
+  post_build:
+    commands:
+      - echo "🎉 Build completed successfully!"
+      - ls -al build/libs
+
+artifacts:
+  files:
+    - build/libs/*.jar
+  discard-paths: yes
+
+
